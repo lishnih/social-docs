@@ -16,9 +16,9 @@ Almost all settings are prefixed with ``SOCIAL_AUTH_``, there are some
 exceptions for Django framework like ``AUTHENTICATION_BACKENDS``.
 
 All settings can be defined per-backend by adding the backend name to the
-setting name like ``SOCIAL_AUTH_TWITTER_LOGIN_URL``. Settings discovery is done
-by reducing the name starting with backend setting, then app setting and
-finally global setting, for example::
+setting name, like ``SOCIAL_AUTH_TWITTER_LOGIN_URL``. Settings discovery is done
+by reducing the name starting with the backend setting, then the app setting,
+and finally the global setting, for example::
 
     SOCIAL_AUTH_TWITTER_LOGIN_URL
     SOCIAL_AUTH_LOGIN_URL
@@ -31,12 +31,12 @@ class by uppercasing it and replacing ``-`` with ``_``.
 Keys and secrets
 ----------------
 
-- Setup needed OAuth keys (see OAuth_ section for details)::
+- Set up needed OAuth keys (see OAuth_ section for details)::
 
     SOCIAL_AUTH_TWITTER_KEY = 'foobar'
     SOCIAL_AUTH_TWITTER_SECRET = 'bazqux'
 
-OpenId backends don't require keys usually, but some need some API Key to
+OpenID backends don't require keys usually, but some need some API Key to
 call any API on the provider. Check Backends_ sections for details.
 
 
@@ -153,7 +153,7 @@ to control username generation.
 ``SOCIAL_AUTH_SLUGIFY_USERNAMES = False``
     For those that prefer slugged usernames, the ``get_username`` pipeline can
     apply a slug transformation (code borrowed from Django project) by defining
-    this setting to ``True``. The feature is disabled by default to to not
+    this setting to ``True``. The feature is disabled by default to not
     force this option to all projects.
 
 ``SOCIAL_AUTH_CLEAN_USERNAMES = True``
@@ -210,8 +210,8 @@ For OAuth backends::
     ]
 
 
-Processing redirects and urlopen
---------------------------------
+Processing requests and redirects
+---------------------------------
 
 The application issues several redirects and API calls. The following settings
 allow some tweaks to the behavior of these.
@@ -222,6 +222,12 @@ allow some tweaks to the behavior of these.
     ``next`` GET argument. If this setting is ``True``, this application will
     vary the domain of the final URL and only redirect to it if it's on the
     same domain.
+    
+``SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS = ['foo', 'bar']``
+    To allow redirection to certain domains while keeping the more restrictive
+    ``SOCIAL_AUTH_SANITIZE_REDIRECTS = True`` setting. This will redirect to the
+    ``next`` GET argument if the hostname is on the list, otherwise it defaults
+    to the value of ``SOCIAL_AUTH_LOGIN_REDIRECT_URL``.
 
 ``SOCIAL_AUTH_REDIRECT_IS_HTTPS = False``
     On projects behind a reverse proxy that uses HTTPS, the redirect URIs
@@ -230,19 +236,23 @@ allow some tweaks to the behavior of these.
     the auth process. To force HTTPS in the final URIs set this setting to
     ``True``
 
-``SOCIAL_AUTH_URLOPEN_TIMEOUT = 30``
-    Any ``urllib2.urlopen`` call will be performed with the default timeout
+``SOCIAL_AUTH_REQUESTS_TIMEOUT = 10``
+    Any ``requests.request`` call will be performed with the default timeout
     value, to change it without affecting the global socket timeout define this
     setting (the value specifies timeout seconds).
 
-    ``urllib2.urlopen`` uses ``socket.getdefaulttimeout()`` value by default, so
-    setting ``socket.setdefaulttimeout(...)`` will affect ``urlopen`` when this
-    setting is not defined, otherwise this setting takes precedence. Also this
-    might affect other places in Django.
+``SOCIAL_AUTH_URLOPEN_TIMEOUT``
+    Deprecated: this was the old timeout setting before the move to ``requests``
+    If it's defined, it will be used as the fallback for the above setting.
+    If the above setting is defined, this one will be ignored.
 
-    ``timeout`` argument was introduced in python 2.6 according to `urllib2
-    documentation`_
+``SOCIAL_AUTH_VERIFY_SSL``
+    If set, it will be passed as the ``verify`` parameter to ``requests.request``
+    calls. To learn more, check the `Requests' SSL verification page`_.
 
+``SOCIAL_AUTH_PROXIES``
+    If set, it will be passed as the ``proxies`` parameter to ``requests.request``
+    calls. To learn more, check the `Requests' Proxies page`_.
 
 Whitelists
 ----------
@@ -272,6 +282,16 @@ Miscellaneous settings
     there are attributes that cannot be updated (like ``username``, ``id``,
     ``email``, etc.), those fields need to be *protect*. Set any field name that
     requires *protection* in this setting, and it won't be updated.
+
+
+``SOCIAL_AUTH_IMMUTABLE_USER_FIELDS = ['email',]``
+    Set any field name that requires *protection* in this setting, and it won't
+    be updated after inital population. This setting is similar to 
+    ``SOCIAL_AUTH_PROTECTED_USER_FIELDS`` in that they both do not allow changes 
+    of the data - however this one allows it to be set if no prior value exists.
+    An example use case might be an application that seeds data from a social 
+    plaform but allows the users to override it locally.    
+
 
 ``SOCIAL_AUTH_SESSION_EXPIRATION = False``
     By default, user session expiration time will be set by your web
@@ -305,6 +325,11 @@ Miscellaneous settings
     sets the `SEND_USER_AGENT` property to `True`. Default value is
     the string `social-auth-<version>`.
 
+``SOCIAL_AUTH_FORCE_EMAIL_LOWERCASE = False``
+    When this setting is ``True`` it is enabled. Once enabled, it will
+    force all emails to be lowercase if they are provided using the 
+    `email` property by the backend. Default value is false.
+
 
 Account disconnection
 ---------------------
@@ -323,7 +348,6 @@ using POST.
     automatically after a short time.
 
 
-.. _urllib2 documentation: http://docs.python.org/library/urllib2.html#urllib2.urlopen
 .. _OpenID PAPE: http://openid.net/specs/openid-provider-authentication-policy-extension-1_0.html
 .. _Installation: ../installing.html
 .. _Backends: ../backends/index.html
@@ -332,3 +356,5 @@ using POST.
 .. _psa-passwordless: https://github.com/omab/psa-passwordless
 .. _SESSION_COOKIE_AGE: https://docs.djangoproject.com/en/1.7/ref/settings/#std:setting-SESSION_COOKIE_AGE
 .. _a set of regular expressions: https://github.com/python-social-auth/social-core/blob/master/social_core/storage.py#L18-L19
+.. _Requests' SSL verification page: https://requests.readthedocs.io/en/latest/user/advanced/#ssl-cert-verification
+.. _Requests' Proxies page: https://requests.readthedocs.io/en/latest/user/advanced/#proxies

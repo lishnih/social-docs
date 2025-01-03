@@ -1,7 +1,7 @@
 Backends
 ========
 
-Here's a list and detailed instruction on how to setup the support for each
+Here's a list and detailed instructions on how to set up the support for each
 backend.
 
 Adding new backend support
@@ -31,7 +31,7 @@ Non-social backends
    email
    username
 
-Base OAuth and OpenId classes
+Base OAuth and OpenID classes
 *****************************
 
 .. toctree::
@@ -50,6 +50,7 @@ Social backends
    amazon
    angel
    aol
+   apple
    appsfuel
    arcgis
    azuread
@@ -58,14 +59,19 @@ Social backends
    behance
    belgium_eid
    bitbucket
+   bitbucket_datacenter_oauth2
    box
    bungie
+   cas
    changetip
    clef
    coinbase
+   cognito
    coursera
    dailymotion
    digitalocean
+   discogs
+   discourse
    disqus
    docker
    douban
@@ -73,23 +79,29 @@ Social backends
    drip
    dropbox
    edmodo
+   etsy
    eventbrite
    eveonline
    evernote
    facebook
+   facebook_limited_login
    fedora
    fitbit
+   flat
    flickr
    foursquare
    github
    github_enterprise
    gitlab
+   gitea
    google
+   grafana
    instagram
    itembase
    jawbone
    justgiving
    kakao
+   keycloak
    khanacademy
    lastfm
    launchpad
@@ -105,6 +117,7 @@ Social backends
    mediawiki
    meetup
    mendeley
+   microsoftgraph
    mineid
    mixcloud
    moves
@@ -113,9 +126,14 @@ Social backends
    naver
    ngpvan_actionid
    odnoklassnikiru
+   okta
    openstreetmap
+   openstreetmap_oauth2
+   oidc
    orbi
    orcid
+   osso
+   patreon
    persona
    pinterest
    pixelpin
@@ -129,8 +147,10 @@ Social backends
    reddit
    runkeeper
    salesforce
+   seznam
    shimmering
    shopify
+   simplelogin
    sketchfab
    skyrock
    slack
@@ -150,10 +170,12 @@ Social backends
    twilio
    twitch
    twitter
+   twitter_oauth2
    udata
    uber
    untappd
    upwork
+   vault
    vend
    vimeo
    vk

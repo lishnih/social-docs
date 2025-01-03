@@ -1,18 +1,18 @@
 Yahoo
 =====
 
-Yahoo supports OpenId and OAuth2 for their auth flow.
+Yahoo supports OpenID and OAuth2 for their auth flow.
 
 
-Yahoo OpenId
+Yahoo OpenID
 ------------
 
-OpenId doesn't require any particular configuration beside enabling the backend
+OpenID doesn't require any particular configuration beside enabling the backend
 in the ``AUTHENTICATION_BACKENDS`` setting::
 
     AUTHENTICATION_BACKENDS = (
         ...
-        'social_core.backends.yahoo.YahooOpenId',
+        'social_core.backends.yahoo.YahooOAuth2',
         ...
     )
 

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased](https://github.com/python-social-auth/social-docs/commits/master)
 
 ### Added
+- Added Facebook Limited Login backend documentation.
+- Added Seznam OAuth2 backend documentation.
+- Added Grafana OAuth2 backend documentation.
 - Added note on using extra auth arguments in Coinbase backend.
 - Added note on using tenants in Azure AD backend.
 - Added note about Microsoft Graph support with AzureAD backend.
@@ -17,10 +20,38 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added Eventbrite OAuth2 backend documentation
 - Added note about `SOCIAL_AUTH_CLEAN_USERNAME_FUNCTION` option
 - Added note about `SOCIAL_AUTH_SHOPIFY_API_VERSION` setting
+- Added SimpleLogin backend documentation.
+- Added GithubApp backend documentation.
+- Added Discourse backend documentation
+- Added Okta backends documentation
+- Added note about `SOCIAL_AUTH_UNTAPPD_USER_AGENT` setting
+- Added `ACCESS_TOKEN_METHOD` backend attribute documentation
+- Added Cognito backend documentation
+- Added Flat backend documentation
+- Added Patreon OAuth2 backend documentation
+- Added details about ORCID `Member API` support
+- Added use-case about improved unicode cleanup from usernames
+- Added documentation for gitea backend
+- Added Twitter API v2 backend documentation
+- Added "OAuth2 with PKCE" instructions under "Adding a new backend"
+- Added Bitbucket Data Center OAuth2 backend documentation
+- Added Etsy OAuth2 backend documentation
+- Added OpenStreetMap OAuth2 backend documentation.
 
 ### Changed
 - Update partial-pipeline docs with the new storage solution details.
 - Update django context-processors format
+- Updated Steam documentation
+- Updated LinkedIn documentation
+- Updated NonceMixin documentation for the new `get` and `delete` class methods
+- Fix `associated_by_email` position in `PIPELINE` documentation
+- Several grammar changes
+- Correct `OpenID` name
+- Fixed typos on pipeline documentation
+- Use gender-neutral pronouns (his -> their)
+- Updated Twitter documentation detailing callback URL addition
+- Updated details bout email validation setting
+- Updated details about `partial_token` in email validation flow
 
 ## [0.1.0](https://github.com/python-social-auth/social-docs/releases/tag/0.1.0) - 2016-12-31
 

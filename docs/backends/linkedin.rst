@@ -1,68 +1,74 @@
 LinkedIn
 ========
 
-LinkedIn supports OAuth1 and OAuth2. Migration between each type is fair simple
-since the same Key / Secret pair is used for both authentication types.
+Sign In with LinkedIn only support OpenID Connect since August 1, 2023. The previous
+OAuth2 has been deprecated. See `LinkedIn OpenID Connect`_ for more details.
 
-LinkedIn OAuth setup is similar to any other OAuth service. The auth flow is
+LinkedIn previously supported OAuth2. Migration between each type is fairly
+simple since the same Key / Secret pair is used for both authentication types.
+
+LinkedIn OAuth2 setup is similar to any other OAuth2 service. The auth flow is
 explained on `LinkedIn Developers`_ docs. First you will need to register an
 app att `LinkedIn Developer Network`_.
 
-
-OAuth1
-------
+OpenID Connect
+--------------
 
 - Fill the application key and secret in your settings::
 
-    SOCIAL_AUTH_LINKEDIN_KEY = ''
-    SOCIAL_AUTH_LINKEDIN_SECRET = ''
-
-- Application scopes can be specified by::
-
-    SOCIAL_AUTH_LINKEDIN_SCOPE = [...]
-
-  Check the available options at `LinkedIn Scopes`_. If you want to request
-  a user's email address, you'll need specify that your application needs
-  access to the email address use the ``r_emailaddress`` scope.
-
-- To request extra fields using `LinkedIn fields selectors`_ just define this
-  setting::
-
-    SOCIAL_AUTH_LINKEDIN_FIELD_SELECTORS = [...]
-
-  with the needed fields selectors, also define ``SOCIAL_AUTH_LINKEDIN_EXTRA_DATA``
-  properly as described in `OAuth <oauth.html>`_, that way the values will be
-  stored in ``UserSocialAuth.extra_data`` field. By default ``id``,
-  ``first-name`` and ``last-name`` are requested and stored.
-
-For example, to request a user's email, headline, and industry from the
-Linkedin API and store the information in ``UserSocialAuth.extra_data``, you
-would add these settings::
-
-    # Add email to requested authorizations.
-    SOCIAL_AUTH_LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress', ...]
-    # Add the fields so they will be requested from linkedin.
-    SOCIAL_AUTH_LINKEDIN_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-    # Arrange to add the fields to UserSocialAuth.extra_data
-    SOCIAL_AUTH_LINKEDIN_EXTRA_DATA = [('id', 'id'),
-                                       ('firstName', 'first_name'),
-                                       ('lastName', 'last_name'),
-                                       ('emailAddress', 'email_address'),
-                                       ('headline', 'headline'),
-                                       ('industry', 'industry')]
+    SOCIAL_AUTH_LINKEDIN_OPENIDCONNECT_KEY = ''
+    SOCIAL_AUTH_LINKEDIN_OPENIDCONNECT_SECRET = ''
 
 OAuth2
 ------
 
-OAuth2 works exacly the same than OAuth1, but the settings must be named as::
+- Fill the application key and secret in your settings::
 
-    SOCIAL_AUTH_LINKEDIN_OAUTH2_*
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = ''
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = ''
+
+- Application scopes can be specified by::
+
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = [...]
+
+  Check the available options at `LinkedIn Scopes`_ (also called as permissions
+  by LinkedIn). If you want to request a user's email address, you'll need
+  specify that your application needs access to the email address use the
+  ``r_emailaddress`` scope.
+
+- To request extra fields using `LinkedIn fields selectors`_ just define this
+  setting::
+
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = [...]
+
+  with the needed fields selectors, also define
+  ``SOCIAL_AUTH_LINKEDIN_OAUTH2_EXTRA_DATA`` properly, that way the values will
+  be stored in ``UserSocialAuth.extra_data`` field. By default ``id``,
+  ``firstName`` and ``lastName`` are requested and stored.
+
+For example, to request a user's email from the Linkedin API and store the
+information in ``UserSocialAuth.extra_data``, you would add these settings::
+
+    # Add email to requested authorizations.
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ['r_liteprofile', 'r_emailaddress']
+    # Add the fields so they will be requested from linkedin.
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_FIELD_SELECTORS = ['emailAddress']
+    # Arrange to add the fields to UserSocialAuth.extra_data
+    SOCIAL_AUTH_LINKEDIN_OAUTH2_EXTRA_DATA = [('id', 'id'),
+                                              ('firstName', 'first_name'),
+                                              ('lastName', 'last_name'),
+                                              ('emailAddress', 'email_address')]
+
 
 Looks like LinkedIn is forcing the definition of the callback URL in the
-application when OAuth2 is used. Be sure to set the proper values, otherwise
-a ``(400) Client Error: Bad Request`` might be returned by their service.
+application when OAuth2 is used. Follow the setup 1 carefully as per `Linkedin
+App Setup`_ to add a redirect url/callback url. Be sure to set the proper
+values, otherwise a ``(400) Client Error: Bad Request`` might be returned by
+their service.
 
-.. _LinkedIn fields selectors: http://developer.linkedin.com/docs/DOC-1014
-.. _LinkedIn Scopes: https://developer.linkedin.com/documents/authentication#granting
+.. _Linkedin OpenID Connect: https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2
+.. _LinkedIn fields selectors: https://docs.microsoft.com/en-us/linkedin/shared/references/v2/profile/lite-profile
+.. _LinkedIn Scopes: https://docs.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin
 .. _LinkedIn Developer Network: https://www.linkedin.com/secure/developer
-.. _LinkedIn Developers: http://developer.linkedin.com/documents/authentication
+.. _LinkedIn Developers: https://docs.microsoft.com/en-us/linkedin/shared/authentication/authentication
+.. _Linkedin App Setup: https://docs.microsoft.com/en-us/linkedin/shared/authentication/authorization-code-flow

@@ -111,6 +111,8 @@ let me know and I'll update the list):
   * sbassi_
   * aspcanada_
   * browniebroke_
+  * eshaan7_
+  * amitray007_
 
 
 .. _python-social-auth: https://github.com/python-social-auth
@@ -217,3 +219,5 @@ let me know and I'll update the list):
 .. _sbassi: https://github.com/sbassi
 .. _aspcanada: https://github.com/aspcanada
 .. _browniebroke: https://github.com/browniebroke
+.. _eshaan7: https://github.com/eshaan7
+.. _amitray007: https://github.com/amitray007

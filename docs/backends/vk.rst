@@ -42,6 +42,7 @@ To support OAuth2 authentication for VK.com applications:
 
   See the `documentation on available fields`_.
 
+- Add ``'social_core.backends.vk.VKAppOAuth2'`` into your ``SOCIAL_AUTH_AUTHENTICATION_BACKENDS``.
 
 - Fill ``Application ID`` and ``Application Secret`` settings::
 
@@ -105,6 +106,8 @@ HTML template with JavaScript code to authenticate, check below for an example.
 
   This app id will be passed to the template as ``VK_APP_ID``.
 
+- Add ``'social_core.backends.vk.VKontakteOpenAPI'`` into your ``SOCIAL_AUTH_AUTHENTICATION_BACKENDS``.
+
 Snippet example::
 
     <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
@@ -133,7 +136,7 @@ Snippet example::
 
 
 .. _VK.com OAuth: https://vk.com/dev/authentication
-.. _VK.com list of permissions: https://vk.com/dev/permissions
-.. _VK.com API: https://vk.com/dev/methods
+.. _VK.com list of permissions: https://dev.vk.com/reference/access-rights
+.. _VK.com API: https://dev.vk.com/method
 .. _authentication for VK.com applications: http://www.ikrvss.ru/2011/11/08/django-social-auh-and-vkontakte-application/
 .. _documentation on available fields: https://vk.com/pages?oid=-17680044&p=getProfiles

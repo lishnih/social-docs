@@ -48,15 +48,15 @@ Also ensure to define the MongoEngine_ storage setting::
 Database
 --------
 
-(For Django 1.7 and higher) you need to sync database to create needed
+When using PostgreSQL, it's recommended to use the built-in `JSONB`
+field to store the extracted ``extra_data``. To enable it define the setting::
+
+  SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+(For Django 1.7 and higher) you need to sync the database to create needed
 models once you added ``social_django`` to your installed apps::
 
     ./manage.py migrate
-
-When using PostgreSQL, it's recommended to use the built-in `JSONB`
-field to store the extracted `extra_data`. To enable it define the setting::
-
-  SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 
 Authentication backends
@@ -82,6 +82,10 @@ or Django won't pick them when trying to authenticate the user.
 Don't miss ``django.contrib.auth.backends.ModelBackend`` if using ``django.contrib.auth``
 application or users won't be able to login by username / password method.
 
+Also, note that ``social_core.backends.google.GoogleOpenId`` has been deprecated.
+
+For more documentation about setting backends to specific social applications, please see the :doc:`/backends/index`.
+
 
 URLs entries
 ------------
@@ -97,6 +101,14 @@ Add URLs entries::
 In case you need a custom namespace, this setting is also needed::
 
     SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+
+Requiring POST only login
+-------------------------
+
+By default login url ``social:begin`` uses ``GET`` request if you would like to require ``POST`` only (for example to comply with SOC audits) logging in then please use::
+
+    SOCIAL_AUTH_REQUIRE_POST = True
 
 
 Templates
@@ -190,11 +202,11 @@ Usage example::
         'social_core.pipeline.social_auth.social_uid',
         'social_core.pipeline.social_auth.social_user',
         'social_core.pipeline.user.get_username',
+        'social_core.pipeline.social_auth.associate_by_email',
         'social_core.pipeline.user.create_user',
         'social_core.pipeline.social_auth.associate_user',
         'social_core.pipeline.social_auth.load_extra_data',
         'social_core.pipeline.user.user_details',
-        'social_core.pipeline.social_auth.associate_by_email',
     )
 
 
@@ -214,6 +226,41 @@ models that behave near or identical to Django ORM models. It is currently
 not decoupled from this pattern by any abstraction layer. If you would like
 to implement your own alternate, please see the ``social_django.models`` and
 ``social_django_mongoengine.models`` modules for guidance.
+
+
+JSON field support
+------------------
+
+Django 3.1 introduces `JSONField` support for all backends and adds a
+deprecation warning.
+
+These are the related settings to enabling this integration:
+
+- `SOCIAL_AUTH_JSONFIELD_ENABLED` (boolean)
+
+  Same behavior, setting name updated to match `JSONField` being supported by
+  all systems::
+
+    SOCIAL_AUTH_POSTGRES_JSONFIELD = True  # Before
+    SOCIAL_AUTH_JSONFIELD_ENABLED = True  # After
+
+- `SOCIAL_AUTH_JSONFIELD_CUSTOM` (import path)
+  Allows specifying an import string. This gives better control to setting a
+  custom JSONField.
+
+  For django systems < 3.1 (technically <4), you can set the old `JSONField`
+  to maintain behavior with earlier social-app-django releases::
+
+    SOCIAL_AUTH_JSONFIELD_CUSTOM = 'django.contrib.postgres.fields.JSONField'
+
+  For sites running or upgrading to django 3.1+, then can set this so the new
+  value::
+
+    SOCIAL_AUTH_JSONFIELD_CUSTOM = 'django.db.models.JSONField'
+
+- Deprecating setting: `SOCIAL_AUTH_POSTGRES_JSONFIELD` (bool)
+  Rename this to `SOCIAL_AUTH_JSONFIELD_ENABLED`. The setting will be deprecated
+  in a future release.
 
 
 Exceptions Middleware

@@ -71,9 +71,9 @@ Associate users by email
 Sometimes it's desirable that social accounts are automatically associated if
 the email already matches a user account.
 
-For example, if a user signed up with his Facebook account, then logged out and
+For example, if a user signed up with their Facebook account, then logged out and
 next time tries to use Google OAuth2 to login, it could be nice (if both social
-sites have the same email address configured) that the user gets into his
+sites have the same email address configured) that the user gets into their
 initial account created by Facebook backend.
 
 This scenario is possible by enabling the ``associate_by_email`` pipeline
@@ -98,7 +98,7 @@ email account and others users could take advantage of that.
 
 Take for instance User A registered in your site with the email
 ``foo@bar.com``. Then a malicious user registers into another provider that
-doesn't validate his email with that same account. Finally this user will turn
+doesn't validate their email with that same account. Finally this user will turn
 to your site (which supports that provider) and sign up to it, since the email
 is the same, the malicious user will take control over the User A account.
 
@@ -226,8 +226,8 @@ accomplish that behavior. There are two ways to do it.
    the ``access_token`` in it.
 
 
-Enable a user to choose a username from his World of Warcraft characters
-------------------------------------------------------------------------
+Enable a user to choose a username from their World of Warcraft characters
+--------------------------------------------------------------------------
 
 If you want to register new users on your site via battle.net, you can enable
 these users to choose a username from their own World-of-Warcraft characters.
@@ -314,5 +314,19 @@ Set this pipeline after ``social_user``::
     )
 
 
+Improve unicode cleanup from usernames
+--------------------------------------
+
+It's possible to improve the username cleanup by using an external library like
+Unidecode_ or Text-Unicode_. You can integrate these by using the
+`SOCIAL_AUTH_CLEAN_USERNAME_FUNCTION` documented at `Username Generation`_
+section. For instance, this will do the work::
+
+    SOCIAL_AUTH_CLEAN_USERNAME_FUNCTION = 'unidecode.unidecode'
+
+
 .. _python-social-auth: https://github.com/python-social-auth
 .. _People API endpoint: https://developers.google.com/+/api/latest/people/list
+.. _Unidecode: https://pypi.org/project/Unidecode/
+.. _Text-Unicode: https://github.com/kmike/text-unidecode/
+.. _Username Generation: configuration/settings.html#username-generation

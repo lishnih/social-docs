@@ -1,7 +1,7 @@
 Testing python-social-auth
 ==========================
 
-Testing the application is fair simple, just met the dependencies and run the
+Testing the application is fairly simple, just met the dependencies and run the
 testing suite.
 
 The testing suite uses HTTPretty_ to mock server responses, it's not a live
@@ -36,7 +36,7 @@ You can use tox_ to test compatibility against all supported Python versions:
 Pending
 -------
 
-At the moment only OAuth1, OAuth2 and OpenId backends are being tested, and
+At the moment only OAuth1, OAuth2 and OpenID backends are being tested, and
 just login and partial pipeline features are covered by the test. There's still
 a lot to work on, like:
 

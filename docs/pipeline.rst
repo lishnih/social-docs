@@ -31,7 +31,7 @@ The default pipeline is composed by::
 
     (
         # Get the information we can about the user and return it in a simple
-        # format to create the user instance later. On some cases the details are
+        # format to create the user instance later. In some cases the details are
         # already part of the auth response from the provider, but sometimes this
         # could hit a provider API.
         'social_core.pipeline.social_auth.social_details',
@@ -155,7 +155,7 @@ In order to override the disconnection pipeline, just define the setting::
     )
 
 Backend specific disconnection pipelines can also be defined with a setting such as
-``SOCIAL_AUTH_TIWTTER_DISCONNECT_PIPELINE``.
+``SOCIAL_AUTH_TWITTER_DISCONNECT_PIPELINE``.
 
 
 Partial Pipeline
@@ -173,15 +173,15 @@ function that cut the process.
 
 ``@partial`` stores needed data into a database table name `social_auth_partial`.
 This table holds the needed information to resume it later from any browsers and
-drops the old dependency on browser sessions that made the move between broswsers
+drops the old dependency on browser sessions that made the move between browsers
 impossible.
 
-The partial data is idetified by a UUID token that can be used to store in the
+The partial data is identified by a UUID token that can be used to store in the
 session or append to any URL using the `partial_token` parameter (default value).
 The lib will pick this value from the request and load the needed partial data to
 let the user continue the process.
 
-The pipeline functions will get a `current_partial` instance that containes the
+The pipeline functions will get a `current_partial` instance that contains the
 partial token and the needed data that will be saved in the database.
 
 To get the backend in order to redirect to any social view, just do::
@@ -202,9 +202,11 @@ There's a pipeline to validate email addresses, but it relies a lot on your
 project.
 
 The pipeline is at ``social_core.pipeline.mail.mail_validation`` and it's a partial
-pipeline, it will return a redirect to a URL that you can use to tell the
-users that an email validation was sent to them. If you want to mention the
-email address you can get it from the session under the key ``email_validation_address``.
+pipeline, it will return a redirect to the URL defined by the
+`EMAIL_VALIDATION_URL` setting. For Django you can use a view name as the value
+for this setting. You can use this redirect to tell the users that an email
+validation was sent to them. If you want to mention the email address you can
+get it from the session under the key ``email_validation_address``.
 
 In order to send the validation python-social-auth_ needs a function that will
 take care of it, this function is defined by the developer with the setting
@@ -229,22 +231,22 @@ contains three fields:
     Flag marking if the email was verified or not.
 
 You should use the code in this instance to build the link for email
-validation which should go to ``/complete/email?verification_code=<code here>``. If you are using
-Django, you can do it with::
+validation which should go to ``/complete/email?verification_code=<code here>&partial_token=<token here>``.
+If you are using Django, you can do it with::
 
     from django.core.urlresolvers import reverse
     url = strategy.build_absolute_uri(
         reverse('social:complete', args=(strategy.backend_name,))
-    ) + '?verification_code=' + code.code
+    ) + '?verification_code=' + code.code + '&partial_token=' + partial_token
+    
 
 On Flask::
 
     from flask import url_for
     url = url_for('social.complete', backend=strategy.backend_name,
-                  _external=True) + '?verification_code=' + code
+                  _external=True) + '?verification_code=' + code.code + '&partial_token=' + partial_token
 
-This pipeline can be used globally with any backend if this setting is
-defined::
+This pipeline can be used globally with any backend if this setting is defined::
 
     SOCIAL_AUTH_FORCE_EMAIL_VALIDATION = True
 
@@ -293,7 +295,7 @@ responses. To enumerate a few:
 ``response = {} or object()``
     The server user-details response, it depends on the protocol in use (and
     sometimes the provider implementation of such protocol), but usually it's
-    just a ``dict`` with the user profile details in such provider. Lots of
+    just a ``dict`` with the user profile details from the provider. Lots of
     information related to the user is provided here, sometimes the ``scope``
     will increase the amount of information in this response on OAuth
     providers.

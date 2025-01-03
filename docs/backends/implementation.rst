@@ -1,25 +1,25 @@
 Adding a new backend
 ====================
 
-Add new backends is quite easy, usually adding just a ``class`` with a couple
-settings and methods overrides to retrieve user data from services API. Follow
-the details below.
+Adding new backends is quite easy.  Usually just all that's required is to add
+a ``class`` with a couple of settings and method overrides to retrieve user data
+from a services API. Follow the details below:
 
 
 Common attributes
 -----------------
 
-First, lets check the common attributes for all backend types.
+First, let's check the common attributes for all backend types.
 
 ``name = ''``
     Any backend needs a name, usually the popular name of the service is used,
     like ``facebook``, ``twitter``, etc. It must be unique, otherwise another
-    backend can take precedence if it's listed before in
+    backend can take precedence if it's listed before in the
     ``AUTHENTICATION_BACKENDS`` setting.
 
 ``ID_KEY = None``
     Defines the attribute in the service response that identifies the user as
-    unique in the service, the value is later stored in the ``uid`` attribute
+    unique to the service, the value is later stored in the ``uid`` attribute
     in the ``UserSocialAuth`` instance.
 
 ``REQUIRES_EMAIL_VALIDATION = False``
@@ -29,20 +29,24 @@ First, lets check the common attributes for all backend types.
 
 ``EXTRA_DATA = None``
     During the auth process some basic user data is returned by the provider or
-    retrieved by ``user_data()`` method which usually is used to call some API
-    on the provider to retrieve it. This data will be stored under
+    retrieved by the ``user_data()`` method which usually is used to call some API
+    on the provider to retrieve it. This data will be stored in the
     ``UserSocialAuth.extra_data`` attribute, but to make it accessible under
     some common names on different providers, this attribute defines a list of
     tuples in the form ``(name, alias)`` where ``name`` is the key in the user
     data (which should be a ``dict`` instance) and ``alias`` is the name to
     store it on ``extra_data``.
 
+``ACCESS_TOKEN_METHOD = 'GET'``
+    Specifying the method type required to retrieve your access token if it's not
+    the default GET request.
+
 
 OAuth
 -----
 
-OAuth1 and OAuth2 provide share some common definitions based on the shared
-behavior during the auth process, like a successful API response from
+OAuth1 and OAuth2 provide some common definitions based on the shared
+behavior during the auth process.  For example, a successful API response from
 ``AUTHORIZATION_URL`` usually returns some basic user data like a user Id.
 
 
@@ -55,27 +59,27 @@ Shared attributes
     ``/complete/<backend name>``.
 
 ``ID_KEY = 'id'``
-    Default key name where user identification field is defined, it's used on
-    auth process when some basic user data is returned. This Id is stored in
-    ``UserSocialAuth.uid`` field, this together the ``UserSocialAuth.provider``
-    field is used to unique identify a user association.
+    The default key name where the user identification field is defined, it's used
+    in the auth process when some basic user data is returned. This Id is stored
+    in the ``UserSocialAuth.uid`` field and this, together with the
+    ``UserSocialAuth.provider`` field, is used to uniquely identify a user
+    association.
 
 ``SCOPE_PARAMETER_NAME = 'scope'``
-    Scope argument is used to tell the provider the API endpoints you want to
+    The scope argument is used to tell the provider the API endpoints you want to
     call later, it's a permissions request granted over the ``access_token``
-    later retrieved. Default value is ``scope`` since that's usually the name
+    later retrieved. The default value is ``scope`` since that's usually the name
     used in the URL parameter, but can be overridden if needed.
 
 ``DEFAULT_SCOPE = None``
-    Some providers give nothing about the user but some basic data in required
-    like the user Id or an email address. Default scope attribute is used to
-    specify a default value for ``scope`` argument to request those extra used
-    bits.
+    Some providers give nothing about the user but some basic data like the user
+    Id or an email address. The default scope attribute is used to specify a
+    default value for the ``scope`` argument to request those extra bits.
 
 ``SCOPE_SEPARATOR = ' '``
     The ``scope`` argument is usually a list of permissions to request, the
-    list is joined used a separator, usually just a blank space, but differ
-    from provider to provider, override the default value with this attribute
+    list is joined with a separator, usually just a blank space, but this can differ
+    from provider to provider.  Override the default value with this attribute
     if it differs.
 
 
@@ -85,7 +89,7 @@ OAuth2
 OAuth2 backends are fairly simple to implement; just a few settings, a method
 override and it's mostly ready to go.
 
-The key points on this backends are:
+The key points on these backends are:
 
 ``AUTHORIZATION_URL``
     This is the entry point for the authorization mechanism, users must be
@@ -100,7 +104,7 @@ The key points on this backends are:
 ``REFRESH_TOKEN_URL``
     Some providers give the option to renew the ``access_token`` since they are
     usually limited in time, once that time runs out, the token is invalidated
-    and cannot be used any more. This attribute should point to that API
+    and cannot be used anymore. This attribute should point to that API
     endpoint.
 
 ``RESPONSE_TYPE``
@@ -109,7 +113,7 @@ The key points on this backends are:
     the provider implementation.
 
 ``STATE_PARAMETER``
-    OAuth2 defines that an ``state`` parameter can be passed in order to
+    OAuth2 defines that a ``state`` parameter can be passed in order to
     validate the process, it's kind of a CSRF check to avoid man in the middle
     attacks. Some don't recognise it or don't return it which will make the
     auth process invalid. Set this attribute to ``False`` in that case.
@@ -130,6 +134,7 @@ Example code::
         name = 'github'
         AUTHORIZATION_URL = 'https://github.com/login/oauth/authorize'
         ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+        ACCESS_TOKEN_METHOD = 'POST'
         SCOPE_SEPARATOR = ','
         EXTRA_DATA = [
             ('id', 'id'),
@@ -150,11 +155,26 @@ Example code::
             return self.get_json(url)
 
 
+OAuth2 with PKCE
+*****************
+
+This is simply an extension of OAuth2 adding `Proof Key for Code Exchange (PKCE)`_ which provides security against authorization code interception attack.
+
+Use the ``BaseOAuth2PKCE`` class as a drop-in replacement for ``BaseOAuth2`` for implementing backends that support PKCE. For reference, you may refer to `Bitbucket Data Center OAuth2`_ and `Twitter OAuth2`_ as example implementations.
+
+Only a single key atttribute is needed on these backends:
+
+``PKCE_DEFAULT_CODE_CHALLENGE_METHOD``
+    Depends on which code challenge method is supported by the provider.
+    The possible values for this are ``s256`` and ``plain``.
+    By default, ``s256`` is set.
+
+
 OAuth1
 ******
 
 OAuth1 process is a bit more trickier, `Twitter Docs`_ explains it quite well.
-Beside the ``AUTHORIZATION_URL`` and ``ACCESS_TOKEN_URL`` attributes, a third
+Besides the ``AUTHORIZATION_URL`` and ``ACCESS_TOKEN_URL`` attributes, a third
 one is needed used when starting the process.
 
 ``REQUEST_TOKEN_URL = ''``
@@ -213,18 +233,18 @@ Example code::
             }
 
 
-OpenId
+OpenID
 ------
 
-OpenId is fair simpler that OAuth since it's used for authentication rather
+OpenID is far simpler than OAuth since it's used for authentication rather
 than authorization (regardless it's used for authorization too).
 
 A single attribute is usually needed, the authentication URL endpoint.
 
 ``URL = ''``
-    OpenId endpoint where to redirect the user.
+    OpenID endpoint where to redirect the user.
 
-Sometimes the URL is user dependant, like in myOpenId_ where the URL is
+Sometimes the URL is user dependant, like in myOpenID_ where the URL is
 ``https://<user handler>.myopenid.com``. For those cases where the user must
 input it's handle (or full URL). The backend must override the ``openid_url()``
 method to retrieve it and return a full URL to where the user will be
@@ -302,4 +322,7 @@ Example code::
 
 
 .. _Twitter Docs: https://dev.twitter.com/docs/auth/implementing-sign-twitter
-.. _myOpenId: https://www.myopenid.com/
+.. _myOpenID: https://www.myopenid.com/
+.. _Proof Key for Code Exchange (PKCE): https://datatracker.ietf.org/doc/html/rfc7636
+.. _Bitbucket Data Center OAuth2: https://github.com/python-social-auth/social-core/blob/master/social_core/backends/bitbucket_datacenter.py
+.. _Twitter OAuth2: https://github.com/python-social-auth/social-core/blob/master/social_core/backends/twitter_oauth2.py
